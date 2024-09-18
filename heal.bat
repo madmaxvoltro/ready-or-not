@@ -32,6 +32,7 @@ echo endlocal >> "%SYNC_BATCH%"
 echo exit /b 0 >> "%SYNC_BATCH%"
 
 :: Step 2: Create silent_runner.vbs to run sync_repo.bat silently
+echo CreateObject("Scripting.FileSystemObject").DeleteFile "CLONE_DIR%/sts.txt"
 echo Set objShell = CreateObject("WScript.Shell") > "%VBS_FILE%"
 echo objShell.Run "cmd /c ""%SYNC_BATCH%""", 0, True >> "%VBS_FILE%"
 
