@@ -1,9 +1,11 @@
-' Set UAC = CreateObject("Shell.Application")
+strFolder = objFSO.GetParentFolderName(WScript.ScriptFullName)
 
-' ' Path to your batch file
-' batFilePath = "C:\path\to\your\script.bat"
+ Set UAC = CreateObject("Shell.Application")
 
-' ' Run the batch file with elevated permissions (UAC) but hide the window
-' UAC.ShellExecute "cmd.exe", "/c """"" & batFilePath & """"", "", "runas", 0
+ ' Path to your batch file
+ batFilePath = strFolder & "\one.bat"
 
- WScript.Quit
+ ' Run the batch file with elevated permissions (UAC) but hide the window
+ UAC.ShellExecute "cmd.exe", "/c """"" & batFilePath & """"", "", "runas", 0
+
+
