@@ -31,7 +31,7 @@ echo ^    git pull >> "%SYNC_BATCH%"
 
 :: Check if the git pull was successful and delete the file
 echo ^    if !ERRORLEVEL! EQU 0 ( >> "%SYNC_BATCH%"
-echo ^        del /q "%CLONE_DIR%/sts.txt" >> "%SYNC_BATCH%"
+::echo ^        del /q "%CLONE_DIR%/sts.txt" >> "%SYNC_BATCH%"
 echo ^    ) >> "%SYNC_BATCH%"
 
 echo ^    cscript //nologo %%VBS_FILE%% >> "%SYNC_BATCH%"
