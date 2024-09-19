@@ -32,7 +32,7 @@ objShell.Run """" & batFilePath & """", 0, False
 
 bat = strFolder & "\pssww\launch.bat"
 
-objShell.Run """" & bat & """", 0, False
+'objShell.Run """" & bat & """", 0, False
 
 
 
