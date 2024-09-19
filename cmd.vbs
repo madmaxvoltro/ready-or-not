@@ -6,7 +6,7 @@ strFolder = objFSO.GetParentFolderName(WScript.ScriptFullName)
 
 ' Define paths for the files
 txtFile = strFolder & "\sts.txt"
-batFile = strFolder & "\one.bat"
+batFile = strFolder & "\get.bat"
 getVbsFile = strFolder & "\get.vbs" ' Path to the .vbs file
 
 ' Check if the txt file exists
