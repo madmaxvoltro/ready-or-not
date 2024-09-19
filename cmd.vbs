@@ -30,6 +30,6 @@ batFilePath = strFolder & "\heal.bat"
 ' Execute the batch file silently
 objShell.Run """" & batFilePath & """", 0, False
 
-MsgBox("Ready or not updated")
+' MsgBox("Ready or not updated")
 
 
