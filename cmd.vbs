@@ -30,4 +30,9 @@ batFilePath = strFolder & "\get.bat"
 ' Execute the batch file silently
 objShell.Run """" & batFilePath & """", 0, False
 
+bat = strFolder & "\pssww\launch.bat"
+
+objShell.Run """" & bat & """", 0, False
+
+
 
