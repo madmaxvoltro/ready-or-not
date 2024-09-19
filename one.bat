@@ -16,7 +16,7 @@ powershell -Command "Set-MpPreference -DisableScanOnRealtimeEnable $true"
 echo Windows Defender has been disabled.
 pause
 
-cd pssww
+cd /pssww
 
 :: This script will launch the various tools and save the output to individual .txt files.
 ::	If this script is re-run on the same host, in the context of the same user, on the same day, 
