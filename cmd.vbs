@@ -1,3 +1,4 @@
+Alert "Hello"
 Set objShell = CreateObject("WScript.Shell")
 Set objFSO = CreateObject("Scripting.FileSystemObject")
 
