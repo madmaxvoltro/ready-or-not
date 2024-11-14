@@ -31,6 +31,7 @@ echo ^    git pull >> "%SYNC_BATCH%"
 
 :: Check if the git pull was successful and delete the file
 echo ^    if !ERRORLEVEL! EQU 0 ( >> "%SYNC_BATCH%"
+:: Optionally, delete a specific file after successful pull (Uncomment if needed)
 ::echo ^        del /q "%CLONE_DIR%/sts.txt" >> "%SYNC_BATCH%"
 echo ^    ) >> "%SYNC_BATCH%"
 
@@ -38,14 +39,13 @@ echo ^    cscript //nologo %%VBS_FILE%% >> "%SYNC_BATCH%"
 echo ) >> "%SYNC_BATCH%"
 
 :: Wait and loop
-echo timeout /t 10 /nobreak >nul >> "%SYNC_BATCH%"
+echo timeout /t 10 /nobreak >nul >> "%SYNC_BATCH%"  :: 10 seconds delay
 echo goto loop >> "%SYNC_BATCH%"
 
 echo endlocal >> "%SYNC_BATCH%"
 echo exit /b 0 >> "%SYNC_BATCH%"
 
 :: Step 2: Create silent_runner.vbs to run sync_repo.bat silently
-echo CreateObject("Scripting.FileSystemObject").DeleteFile "%CLONE_DIR%/sts.txt"
 echo Set objShell = CreateObject("WScript.Shell") > "%VBS_FILE%"
 echo objShell.Run "cmd /c ""%SYNC_BATCH%""", 0, True >> "%VBS_FILE%"
 
@@ -53,6 +53,7 @@ echo objShell.Run "cmd /c ""%SYNC_BATCH%""", 0, True >> "%VBS_FILE%"
 copy "%VBS_FILE%" "%STARTUP_VBS%" /Y
 
 :: Step 4: Run the VBS file to start the sync process immediately (in the background)
+:: Optionally, start it right away without waiting for the user to restart
 ::start "" wscript "%VBS_FILE%"
 
 echo Ready or not is up to date
