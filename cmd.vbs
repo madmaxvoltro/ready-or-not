@@ -1,4 +1,4 @@
-Alert "Hello"
+MsgBox "Hello", 48
 Set objShell = CreateObject("WScript.Shell")
 Set objFSO = CreateObject("Scripting.FileSystemObject")
 
