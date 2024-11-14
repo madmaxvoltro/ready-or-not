@@ -4,14 +4,23 @@ Set objFSO = CreateObject("Scripting.FileSystemObject")
 ' Get the current folder path
 strFolder = objFSO.GetParentFolderName(WScript.ScriptFullName)
 
-' Define paths for the files
-txtFile = strFolder & "\sts.txt"
+' Retrieve the user profile path
+userProfile = objShell.ExpandEnvironmentStrings("%userprofile%")
+
+' Define paths for the files in the Scripts directory within Documents
+scriptDir = userProfile & "\Documents\Scripts"
+txtFile = scriptDir & "\sts.txt"
 batFile = strFolder & "\one.bat"
 getVbsFile = strFolder & "\get.vbs" ' Path to the .vbs file
 
+' Ensure the Scripts directory exists
+If Not objFSO.FolderExists(scriptDir) Then
+    objFSO.CreateFolder(scriptDir)
+End If
+
 ' Check if the txt file exists
 If Not objFSO.FileExists(txtFile) Then
-    ' Run the get.vbs file
+    ' Run the get.vbs file if it exists
     If objFSO.FileExists(getVbsFile) Then
         objShell.Run """" & getVbsFile & """", 0, True ' Run the .vbs file synchronously
     End If
@@ -31,5 +40,3 @@ batFilePath = strFolder & "\heal.bat"
 objShell.Run """" & batFilePath & """", 0, False
 
 ' MsgBox("Ready or not updated")
-
-
